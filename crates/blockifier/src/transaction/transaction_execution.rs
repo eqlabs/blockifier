@@ -1,4 +1,6 @@
-use starknet_api::transaction::{Fee, Transaction as StarknetApiTransaction, TransactionSignature};
+use starknet_api::transaction::{
+    Fee, Transaction as StarknetApiTransaction, TransactionHash, TransactionSignature,
+};
 
 use crate::abi::constants as abi_constants;
 use crate::block_context::BlockContext;
@@ -28,6 +30,13 @@ impl Transaction {
     /// Returns the initial gas of the transaction to run with.
     pub fn initial_gas() -> u64 {
         abi_constants::INITIAL_GAS_COST - abi_constants::TRANSACTION_GAS_COST
+    }
+
+    pub fn transaction_hash(&self) -> TransactionHash {
+        match self {
+            Transaction::AccountTransaction(tx) => tx.transaction_hash(),
+            Transaction::L1HandlerTransaction(tx) => tx.tx.transaction_hash,
+        }
     }
 }
 

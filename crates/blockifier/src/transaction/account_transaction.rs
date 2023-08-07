@@ -7,7 +7,7 @@ use starknet_api::core::{ContractAddress, EntryPointSelector};
 use starknet_api::deprecated_contract_class::EntryPointType;
 use starknet_api::hash::StarkFelt;
 use starknet_api::transaction::{
-    Calldata, DeployAccountTransaction, Fee, InvokeTransaction, TransactionVersion,
+    Calldata, DeployAccountTransaction, Fee, InvokeTransaction, TransactionHash, TransactionVersion,
 };
 
 use crate::abi::abi_utils::selector_from_name;
@@ -84,6 +84,14 @@ impl AccountTransaction {
             AccountTransaction::Declare(_) => TransactionType::Declare,
             AccountTransaction::DeployAccount(_) => TransactionType::DeployAccount,
             AccountTransaction::Invoke(_) => TransactionType::InvokeFunction,
+        }
+    }
+
+    pub fn transaction_hash(&self) -> TransactionHash {
+        match self {
+            AccountTransaction::Declare(tx) => tx.tx().transaction_hash(),
+            AccountTransaction::DeployAccount(tx) => tx.transaction_hash,
+            AccountTransaction::Invoke(tx) => tx.transaction_hash(),
         }
     }
 
